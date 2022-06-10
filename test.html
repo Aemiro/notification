@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perago push notification</title>
+</head>
+
+<body>
+    <div>
+        <h1>Real Time Messaging</h1>
+        <pre id="messages" style="height: 400px; overflow: scroll"></pre>
+        <input type="text" id="messageBox" placeholder="Type your message here"
+            style="display: block; width: 100%; margin-bottom: 10px; padding: 10px;" />
+        <button id="send" title="Send Message!" style="width: 100%; height: 30px;">Send Message</button>
+
+    </div>
+
+    <script>
+        (function ()
+        {
+            const sendBtn = document.querySelector('#send');
+            const messages = document.querySelector('#messages');
+            const messageBox = document.querySelector('#messageBox');
+
+            let ws;
+
+            function showMessage(message)
+            {
+                const d = JSON.parse(message);
+                messages.textContent += `\n\n${d.sender.name}:${d.msg.content}`;
+
+                // messages.textContent += `\n\n${d.subject}:${d.content}`;
+                // messages.textContent += `\n\n${message}`;
+                messages.scrollTop = messages.scrollHeight;
+                messageBox.value = '';
+            }
+
+            function init()
+            {
+                if (ws)
+                {
+                    ws.onerror = ws.onopen = ws.onclose = null;
+                    ws.close();
+                }
+                ws = new WebSocket('ws://localhost:8081');
+                ws.onopen = () =>
+                {
+                    const userData = {
+                        type: 'register',
+                        user: {
+                            name: 'Aemiro Mekete',
+                            email: 'aemiro@gmail.com',
+                            id: 'f3128bdb-cd64-4a36-acaf-0743e018171c'
+                        }
+
+                    }
+                    ws.send(JSON.stringify(userData));
+                    console.log('Connection opened!');
+                }
+                ws.onmessage = ({ data }) => showMessage(data);
+                ws.onclose = function ()
+                {
+                    ws = null;
+                    console.log('Connection Closed!');
+
+                }
+            }
+
+            sendBtn.onclick = function ()
+            {
+                if (!ws)
+                {
+                    // showMessage("No WebSocket connection :(");
+                    return;
+                }
+                const msg = {
+                    type: 'send',
+                    to: 'ea817972-5af1-4cc3-9ea0-0e24e45a2818',
+                    data: {
+                        subject: 'sample subject',
+                        content: messageBox.value,
+                        id: 'ea817972-5af1-4cc3-9ea0-0e24e45a2818'
+                    }
+
+                }
+                ws.send(JSON.stringify(msg));
+                //showMessage(messageBox.value);
+            }
+
+            init();
+        })();
+    </script>
+</body>
+
+</html>
