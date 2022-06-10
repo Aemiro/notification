@@ -44,7 +44,7 @@
                     ws.onerror = ws.onopen = ws.onclose = null;
                     ws.close();
                 }
-                ws = new WebSocket('ws://localhost:8000/notification');
+                ws = new WebSocket('ws://perago-notification.herokuapp.com/notification');
                 ws.onopen = () =>
                 {
                     const userData = {
