@@ -44,7 +44,7 @@
                     ws.onerror = ws.onopen = ws.onclose = null;
                     ws.close();
                 }
-                ws = new WebSocket('ws://localhost:8081');
+                ws = new WebSocket('ws://localhost:8000/notification');
                 ws.onopen = () =>
                 {
                     const userData = {

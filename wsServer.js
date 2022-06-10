@@ -11,7 +11,7 @@ const msgType = {
 let connectedDevices = [];
 module.exports = () =>
 {
-    const wsServer = new WebSocketServer({ port: process.env.WEBSOCKET_PORT })
+    const wsServer = new WebSocketServer({ noServer: true, path: "/notification" })
     wsServer.on('connection', function connection(ws, request)
     {
         const sessionId = uuidv4();

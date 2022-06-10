@@ -23,3 +23,12 @@ server.listen(Number(process.env.PORT), () =>
     console.log(`Server running on port ${process.env.PORT}`)
 
 })
+
+server.on('upgrade', function (request, socket, head)
+{
+    wss.handleUpgrade(request, socket, head, function (ws)
+    {
+        console.log("Websocket ")
+        wss.emit('connection', ws, request);
+    })
+})
